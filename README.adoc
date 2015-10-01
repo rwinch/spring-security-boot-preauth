@@ -1,0 +1,48 @@
+WARNING: This application is only a demo and NOT SECURE. See below for details.
+
+= Overview
+
+A sample application that shows how to allow an external system authenticate with Spring Security.
+In this example, we assume that something is added to the request by an external system.
+The application works as follows:
+
+* `TokenFilter` obtains a token from the request.
+This is currently implemented by obtaining the value of the cookie named `token`.
+* `TokenFilter` validates the token.
+There is no validation for this simple demo which means **this sample is NOT SECURE**.
+In a production application, you would need to ensure that the token is validated.
+* `TokenFilter` translates the token into a valid user.
+To keep things simple, this is currently done by assuming the token is the user name.
+The roles are a hard coded constant.
+In a production application, the translation would be the result of validating the token.
+* `TokenFilter` sets the current user on the `SecurityContextHolder`.
+The `SecurityContextHolder` is the central place to discover what the current user is.
+As demonstrated in `TokenFilter` the way Spring Security determines the user is declarative.
+
+NOTE: It is important to note that `SecurityContextHolder` is associating the current user to the Thread.
+In a web environment, the Threads are pooled.
+This means it is very important to clear the `SecurityContextHolder` after the request executes.
+If your code executes after Spring Security's `FilterChainProxy`, then the `SecurityContextHolder` is cleared out for you.
+
+= Running the sample
+
+You can run the sample using:
+
+	$ ./mvnw spring-boot:run
+
+Then access http://localhost:8080/
+
+You will not have access.
+
+Set a cookie named token to a username.
+An easy way to do this is to type the following in the address bar:
+
+	javascript:document.cookie='token=rob'
+
+NOTE: Some browsers prevent copy pasting in the `javascript:` prefix for security reasons.
+This means you may need to type this manually.
+
+
+Then access http://localhost:8080/
+
+You will be authenticated as `rob`.
